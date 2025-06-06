@@ -1,69 +1,117 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <time.h>
 
-// 삼각형을 출력하는 함수
-void print_triangle(int n) {
-    // 직삼각형
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n - i - 1; j++) {
-            printf(" ");
-        }
-        for (int j = 0; j <= i; j++) {
-            printf("*");
-        }
-        printf("\n");
+#define MAX 6
+#define MAX_LEN 100
+
+char candidate01[MAX_LEN], candidate02[MAX_LEN], candidate03[MAX_LEN],
+     candidate04[MAX_LEN], candidate05[MAX_LEN], candidate06[MAX_LEN];
+
+char *member_info[MAX] = {candidate01, candidate02, candidate03, candidate04, candidate05, candidate06};
+
+void read_line(char *buffer, int length) {
+    int i = 0;
+    char ch;
+    while ((ch = getchar()) != '\n' && ch != EOF && i < length - 1) {
+        buffer[i++] = ch;
     }
+    buffer[i] = '\0';
 }
 
-void print_reverse_triangle(int n) {
-    // 역직삼각형
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < i; j++) {
-            printf(" ");
-        }
-        for (int j = 0; j < n - i; j++) {
-            printf("*");
-        }
-        printf("\n");
+int calculate_age(const char *dob) {
+    int year = 0;
+    for (int i = 0; i < 4; ++i) {
+        year = year * 10 + (dob[i] - '0');
     }
+    return 2025 - year;
 }
 
 int main() {
-    char name[100];
-    char date[11];  // yyyy-mm-dd 포맷
-    time_t t;
-    struct tm tm_info;
+    char group_name[MAX_LEN];
+    char name[MAX][MAX_LEN], dob[MAX][MAX_LEN], gender[MAX][2], email[MAX][MAX_LEN];
+    char nationality[MAX][MAX_LEN], primary[MAX][MAX_LEN], secondary[MAX][MAX_LEN];
+    char mbti[MAX][MAX_LEN], intro[MAX][MAX_LEN];
+    float bmi[MAX];
+    int topik[MAX], age[MAX];
 
-    // 날짜와 이름 입력 받기
-    printf("[현재 날짜를 \"yyyy-mm-dd\" 형식으로 입력하세요]: ");
-    scanf("%10s", date);
-    printf("[당신의 이름을 입력하세요]: ");
-    scanf(" %[^\n]s", name);  // 이름 입력 시 공백 포함 가능하게
+    printf("Enter Audition Group Name (e.g., Milliways): ");
+    read_line(group_name, MAX_LEN);
 
-    // 정상 입력 처리 메시지
-    printf("**입력이 정상적으로 처리되었습니다.**\n");
+    printf("\n####################################\n");
+    printf("[%s] Audition Candidate Data Entry\n", group_name);
+    printf("####################################\n");
 
-    // 3초 대기 후 화면 지우기
-    sleep(3);
-    system("clear");  // 윈도우에서는 "cls"로 대체 가능
+    int index = 0;
+    while (index < MAX) {
+        printf("\nEntering information for candidate %d.\n", index + 1);
+        printf("---------------------------------\n");
 
-    // 삼각형 출력
-    int triangle_size = 10;
-    print_triangle(triangle_size);
-    print_reverse_triangle(triangle_size);
+        printf("1. Name: ");
+        read_line(name[index], MAX_LEN);
 
-    // 스플래시 화면 출력
-    printf("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-    printf("*                         [마그라테아 ver 0.1]                               *****\n");
-    printf("**   풀 한 포기 없는 황무지에서 반짝이는 행성을 만들내는 곳 마그라테아,            ****\n");
-    printf("*   사람들이 보지 못하는 잠재력을 찾고 전문가의 손길을 더해 보석을 빗는 곳,       ***\n");
-    printf("**    마그라테아에 오신걸 환영합니다.                                         **\n");
-    printf("***                                                                          *\n");
-    printf("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-    printf("[사용자]: %s                                   [실행 시간]:%s\n", name, date);
-    printf("============================================================================\n");
+        printf("2. Date of Birth (YYYY/MM/DD): ");
+        read_line(dob[index], MAX_LEN);
+        age[index] = calculate_age(dob[index]);
+
+        printf("3. Gender (F/M): ");
+        read_line(gender[index], 2);
+
+        printf("4. Email: ");
+        read_line(email[index], MAX_LEN);
+
+        printf("5. Nationality: ");
+        read_line(nationality[index], MAX_LEN);
+
+        printf("6. BMI: ");
+        scanf("%f", &bmi[index]);
+        getchar();
+
+        printf("7. Primary Skill: ");
+        read_line(primary[index], MAX_LEN);
+
+        printf("8. Secondary Skill: ");
+        read_line(secondary[index], MAX_LEN);
+
+        printf("9. Korean Proficiency Level (TOPIK): ");
+        scanf("%d", &topik[index]);
+        getchar();
+
+        printf("10. MBTI: ");
+        read_line(mbti[index], MAX_LEN);
+
+        printf("11. Introduction: ");
+        read_line(intro[index], MAX_LEN);
+        
+        snprintf(member_info[index], MAX_LEN, "[Stored] %s", name[index]);
+
+        index++;
+    }
+    printf("\n####################################\n");
+    printf("[%s] Audition Candidate Data Review\n", group_name);
+    printf("####################################\n");
+    printf("=============================================================================================\n");
+    printf("Name              | Age | DOB       | Gender | Email                 | Nationality | BMI  | Primary Skill | Secondary Skill     | TOPIK     | MBTI\n");
+    printf("=============================================================================================\n");
+
+    for (int i = 0; i < MAX; ++i) {
+        char *topik_level;
+        switch (topik[i]) {
+            case 0: topik_level = "Native"; break;
+            case 1: topik_level = "Beginner"; break;
+            case 2: topik_level = "Basic"; break;
+            case 3: topik_level = "Intermediate"; break;
+            case 4: topik_level = "Advanced"; break;
+            default: topik_level = "Unknown"; break;
+        }
+
+        printf("%-17s | %-3d | %-9s | %-6s | %-21s | %-11s | %-4.1f | %-13s | %-19s | %-9s | %-4s\n",
+               name[i], age[i], dob[i], gender[i], email[i], nationality[i],
+               bmi[i], primary[i], secondary[i], topik_level, mbti[i]);
+
+        printf("---------------------------------------------------------------------------------------------\n");
+        printf("%s\n", intro[i]);
+        printf("---------------------------------------------------------------------------------------------\n");
+    }
 
     return 0;
 }
